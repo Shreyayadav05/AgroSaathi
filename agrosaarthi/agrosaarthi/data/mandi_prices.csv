@@ -1,0 +1,12 @@
+state,district,market,crop,min_price,max_price,unit
+Karnataka,Davanagere,Davanagere APMC,Rice,2200,2450,quintal
+Karnataka,Davanagere,Davanagere APMC,Maize,1800,2050,quintal
+Karnataka,Davanagere,Harihara APMC,Cotton (kapas),6200,6900,quintal
+Karnataka,Shivamogga,Shivamogga APMC,Arecanut,38000,42000,quintal
+Maharashtra,Nashik,Lasalgaon APMC,Onion,900,1300,quintal
+Maharashtra,Pune,Pune APMC,Tomato,700,1100,quintal
+Gujarat,Surat,Surat APMC,Cotton (kapas),6000,6700,quintal
+Telangana,Hyderabad,Secunderabad APMC,Tur (Arhar),5500,6300,quintal
+Andhra Pradesh,Guntur,Guntur APMC,Chillies (dry),12000,15000,quintal
+Tamil Nadu,Coimbatore,Coimbatore APMC,Groundnut,5200,5900,quintal
+West Bengal,Hooghly,Hooghly APMC,Rice,2100,2350,quintal
