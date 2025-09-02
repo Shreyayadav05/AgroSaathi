@@ -3,4 +3,7 @@ scikit-learn
 pandas
 numpy
 audio-recorder-streamlit
-
+SpeechRecognition
+gTTS
+googletrans==4.0.0-rc1
+pydub
