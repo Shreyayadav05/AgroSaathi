@@ -1,78 +1,48 @@
 import streamlit as st
-import numpy as np
 import pandas as pd
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from audio_recorder_streamlit import audio_recorder
-import speech_recognition as sr
 from deep_translator import GoogleTranslator
+import warnings
+warnings.filterwarnings("ignore")
 
-# ----------------------------
-# Sample knowledge base (expand later with crop info, mandi prices, etc.)
-# ----------------------------
-knowledge_base = {
-    "wheat": "Wheat needs cool weather and well-drained soil. Irrigation should be minimal after flowering.",
-    "rice": "Rice requires standing water in fields. It grows best in clay soil with high moisture.",
-    "sugarcane": "Sugarcane requires a tropical climate with high rainfall. Needs fertile soil and periodic irrigation.",
-    "tomato": "Tomatoes grow best in well-drained loamy soil with good sunlight. Avoid waterlogging.",
-    "fertilizer": "Use NPK fertilizers based on soil test. Avoid overuse to prevent soil damage.",
+st.set_page_config(page_title="AgroSaarthi", layout="wide")
+
+# Sample knowledge base (expand with more farming Q&A)
+qa_data = {
+    "What is the best fertilizer for wheat?": "Urea and DAP are commonly used. Apply based on soil test.",
+    "How to control pests in rice?": "Use integrated pest management: pheromone traps, neem spray, and selective pesticides.",
+    "Which crop is best for dry land?": "Millets, pulses, and oilseeds perform well in low-rainfall areas."
 }
 
-# ----------------------------
-# Helper: Get best answer
-# ----------------------------
-def get_answer(user_query):
-    docs = list(knowledge_base.values())
-    keys = list(knowledge_base.keys())
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(list(qa_data.keys()))
 
-    vectorizer = TfidfVectorizer()
-    tfidf = vectorizer.fit_transform(docs + [user_query])
-    similarities = cosine_similarity(tfidf[-1], tfidf[:-1])
-    best_match_idx = similarities.argmax()
-    return docs[best_match_idx]
+st.title("🌾 AgroSaarthi - Farmer’s AI Assistant")
+st.write("Ask any farming-related question in your language!")
 
-# ----------------------------
-# Streamlit UI
-# ----------------------------
-st.set_page_config(page_title="AgroSaarthi 🌾", layout="centered")
-st.title("🌱 AgroSaarthi – Your Farming Assistant")
+# User input
+user_q = st.text_input("Enter your question:")
 
-st.markdown("Ask questions in **any language** (voice or text).")
+if user_q:
+    try:
+        # Translate to English if needed
+        translated_q = GoogleTranslator(source="auto", target="en").translate(user_q)
 
-# User input choice
-mode = st.radio("Choose input method:", ["🎤 Voice", "⌨️ Text"])
+        # Match with FAQ knowledge base
+        q_vec = vectorizer.transform([translated_q])
+        similarity = cosine_similarity(q_vec, X).flatten()
+        idx = np.argmax(similarity)
 
-user_input = ""
+        answer = list(qa_data.values())[idx]
 
-if mode == "⌨️ Text":
-    text_query = st.text_area("Type your farming question:")
-    if text_query:
-        # Translate to English
-        user_input = GoogleTranslator(source="auto", target="en").translate(text_query)
+        # Translate answer back to user language
+        detected_lang = GoogleTranslator(source="auto", target="en").translate(user_q)
+        user_lang = GoogleTranslator(source="en", target="auto").translate("hello")  # trick to detect
+        final_ans = GoogleTranslator(source="en", target="auto").translate(answer)
 
-elif mode == "🎤 Voice":
-    st.info("Click the mic below and speak...")
-    audio_bytes = audio_recorder()
-    if audio_bytes:
-        with open("temp.wav", "wb") as f:
-            f.write(audio_bytes)
-
-        recognizer = sr.Recognizer()
-        with sr.AudioFile("temp.wav") as source:
-            audio = recognizer.record(source)
-            try:
-                voice_text = recognizer.recognize_google(audio, language="hi-IN")
-                st.write(f"You said: **{voice_text}**")
-                user_input = GoogleTranslator(source="auto", target="en").translate(voice_text)
-            except:
-                st.error("Sorry, could not understand voice.")
-
-# Process query
-if user_input:
-    answer = get_answer(user_input)
-    # Translate answer back to original language (assume Hindi for demo)
-    translated_answer = GoogleTranslator(source="en", target="hi").translate(answer)
-
-    st.subheader("Answer 🌾")
-    st.write(translated_answer)
+        st.success(final_ans)
+    except Exception as e:
+        st.error(f"⚠️ Error: {e}")
 
