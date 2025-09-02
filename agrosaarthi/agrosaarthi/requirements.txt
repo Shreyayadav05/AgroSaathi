@@ -2,6 +2,7 @@ streamlit
 scikit-learn
 pandas
 numpy
-audio-recorder-streamlit
-SpeechRecognition
 deep-translator
+speechrecognition
+pydub
+audio-recorder-streamlit
