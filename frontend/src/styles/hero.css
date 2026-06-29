@@ -1,0 +1,58 @@
+.hero{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:80px;
+min-height:85vh;
+background:#f5fff5;
+}
+
+.hero-left{
+width:55%;
+}
+
+.hero-left h1{
+font-size:60px;
+line-height:70px;
+color:#205522;
+}
+
+.hero-left span{
+color:#37b24d;
+}
+
+.hero-left p{
+margin-top:30px;
+font-size:20px;
+line-height:35px;
+color:#666;
+}
+
+.hero-buttons{
+margin-top:40px;
+display:flex;
+gap:20px;
+}
+
+.primary-btn{
+padding:15px 35px;
+border:none;
+background:#2e7d32;
+color:white;
+border-radius:10px;
+cursor:pointer;
+font-size:18px;
+}
+
+.secondary-btn{
+padding:15px 35px;
+border:2px solid #2e7d32;
+background:white;
+border-radius:10px;
+cursor:pointer;
+font-size:18px;
+}
+
+.hero-right{
+font-size:170px;
+}
